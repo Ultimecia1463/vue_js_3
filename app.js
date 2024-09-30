@@ -3,6 +3,7 @@ const app = Vue.createApp({
     //template: '<h2>i am a template</h2>'
     data(){
         return{
+            show:true,
             title:'yooooooooo',
             name:'neegers',
             age:10
