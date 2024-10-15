@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Tic-Tac-Toe</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin: 0 auto;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        .cell:hover {
+            background-color: #ddd;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Tic-Tac-Toe</h1>
+        <div class="board">
+            <div 
+                v-for="(cell, index) in board" 
+                :key="index" 
+                class="cell" 
+                @click="makeMove(index)">
+                {{ cell }}
+            </div>
+        </div>
+        <div class="status">
+            <p v-if="winner">{{ winnerMessage }}</p>
+            <p v-else>Current Player: {{ currentPlayer }}</p>
+        </div>
+        <button @click="resetGame">Reset Game</button>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                board: Array(9).fill(''),
+                currentPlayer: 'X',
+                winner: null
+            },
+            computed: {
+                winnerMessage() {
+                    return this.winner ? `${this.winner} Wins!` : '';
+                }
+            },
+            methods: {
+                makeMove(index) {
+                    if (this.board[index] === '' && !this.winner) {
+                        Vue.set(this.board, index, this.currentPlayer);
+                        if (this.checkWinner()) {
+                            this.winner = this.currentPlayer;
+                        } else {
+                            this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+                        }
+                    }
+                },
+                checkWinner() {
+                    const winningCombos = [
+                        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                        [0, 4, 8], [2, 4, 6]             // Diagonals
+                    ];
+                    return winningCombos.some(combo => {
+                        const [a, b, c] = combo;
+                        return this.board[a] && this.board[a] === this.board[b] && this.board[a] === this.board[c];
+                    });
+                },
+                resetGame() {
+                    this.board = Array(9).fill('');
+                    this.currentPlayer = 'X';
+                    this.winner = null;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
